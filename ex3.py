@@ -1,3 +1,5 @@
+import pytest
+
 class Bank:
     def __init__(self):
         self.amount = 0
@@ -6,8 +8,13 @@ class Bank:
         self.amount += money
 
     def withdraw(self, money: int):
+        if money > self.amount:
+            raise NotEnoughMoney
         self.amount -= money
         return money
+
+class NotEnoughMoney(Exception):
+    pass
 
 class TestBank:
     def test_create(self):
@@ -41,3 +48,8 @@ class TestBank:
         #then
         assert money == 60
         assert bank.amount == 140
+
+    def overWithdraw(self):
+        with pytest.raises(NotEnoughMoney):
+            bank = Bank()
+            bank.withdraw(58)
